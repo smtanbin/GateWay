@@ -27,13 +27,14 @@ func ProxyRequest(c fiber.Ctx, method, targetURL string, domain *models.DomainMo
 	}
 
 	// ── propagate original headers (skip Host – http.Client sets it) ────────
-	c.Request().Header.VisitAll(func(k, v []byte) {
-		key := string(k)
+	for key, values := range c.GetReqHeaders() {
 		if strings.EqualFold(key, "Host") {
-			return
+			continue
 		}
-		req.Header.Add(key, string(v))
-	})
+		for _, v := range values {
+			req.Header.Add(key, v)
+		}
+	}
 
 	// ── inject authentication ────────────────────────────────────────────────
 	applyAuth(req, domain)

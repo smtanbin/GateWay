@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"strings"
 
 	"gorm.io/gorm"
 	"smtanbin.com/gateway/src/models"
@@ -22,7 +23,7 @@ var (
 // translate the error into HTTP status codes.
 func DomainValidation(name string) (*models.DomainModel, error) {
 	d := &models.DomainModel{}
-	if err := database.DB.Where(&models.DomainModel{DomainName: name}).First(d).Error; err != nil {
+	if err := database.DB.Where(&models.DomainModel{DomainName: strings.ToLower(name)}).First(d).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("not found")
 		}

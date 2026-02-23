@@ -1,30 +1,53 @@
-package services
+﻿package services
 
 import (
 	"errors"
+	"strings"
 
-	"gorm.io/gorm"
 	"smtanbin.com/gateway/src/models"
 	"smtanbin.com/gateway/src/models/database"
 )
 
-// DomainEndpointValidation looks for an endpoint record that matches the
-// provided domain, HTTP method and request path.  It returns the endpoint
-// model (which contains the dist endpoint URL) or an error.
-func DomainEndpointValidation(domain *models.DomainModel, method, suffix string) (*models.EndpointModel, error) {
-	ep := &models.EndpointModel{}
-	// query active endpoints for this domain/method; allow wildcard "*".
-	err := database.DB.Where("domain_name = ? AND request_type = ? AND active = ?", domain.DomainName, method, true).
-		Where("endpoint = ? OR endpoint = '*'", suffix).
-		Order("endpoint DESC"). // ensures concrete paths are preferred over '*'
-		First(ep).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, errors.New("not found")
-		}
+// DomainEndpointValidation checks whether a request should be blocked.
+// Rules:
+//   - Exact match found + active   â†’ allowed, returns the endpoint config
+//   - Exact match found + inactive â†’ blocked, returns error
+//   - No exact match, wildcard "*" active â†’ allowed, returns wildcard config
+//   - No match at all              â†’ open by default, returns nil, nil
+func DomainEndpointValidation(domainid, method, suffix string) (*models.EndpointModel, error) {
+	var endpoints []models.EndpointModel
+
+	// fetch all endpoints for this domain
+	domainid = strings.ToLower(domainid)
+	if err := database.DB.Where(&models.EndpointModel{DomainID: domainid}).Find(&endpoints).Error; err != nil {
 		return nil, err
 	}
 
-	// successful lookup
-	return ep, nil
+	var wildcard *models.EndpointModel
+	for i := range endpoints {
+		ep := &endpoints[i]
+		if ep.RequestType != method {
+			continue
+		}
+		if ep.Endpoint == suffix {
+			if !ep.Active {
+				return nil, errors.New("endpoint is blocked")
+			}
+			return ep, nil // exact match, active â†’ allowed
+		}
+		if ep.Endpoint == "*" {
+			wildcard = ep // keep wildcard as fallback
+		}
+	}
+
+	// no exact match â€” fall back to wildcard if present and active
+	if wildcard != nil {
+		if !wildcard.Active {
+			return nil, errors.New("endpoint is blocked")
+		}
+		return wildcard, nil
+	}
+
+	// no record at all â†’ open by default
+	return nil, nil
 }

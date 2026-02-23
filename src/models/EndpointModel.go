@@ -3,14 +3,13 @@ package models
 import "time"
 
 type EndpointModel struct {
-	ID           string    `json:"id" gorm:"primaryKey"`
-	RequestType  string    `json:"request_type"`
-	Endpoint     string    `json:"endpoint"`
-	DistEndpoint string    `json:"dist_endpoint"`
-	DomainName   string    `json:"domain_name"`
-	Active       bool      `json:"active"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID          string    `json:"id" gorm:"primaryKey"`
+	RequestType string    `json:"request_type"`
+	Endpoint    string    `json:"endpoint"`
+	DomainID    string    `json:"domain_id"`
+	Active      bool      `json:"active"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 func (EndpointModel) TableName() string {

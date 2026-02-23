@@ -15,7 +15,7 @@ func RegisterRoutes(group fiber.Router) {
 }
 
 func ProxyContoller(c fiber.Ctx) error {
-	mth := string(c.Request().Method())
+	mth := c.Method()
 	path := c.Path()
 
 	domainName, err := services.ExtractAPIPathFn(path)
@@ -28,18 +28,19 @@ func ProxyContoller(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid domain"})
 	}
 
-	suffix := strings.TrimPrefix(path, "/api/"+domainName)
-	endpoint, err := services.DomainEndpointValidationFn(domain, mth, suffix)
+	// split /api/<domain>/rest/of/path → suffix is everything after the domain segment
+	parts := strings.SplitN(path, "/", 4) // ["", "api", "<domain>", "rest/of/path"]
+	suffix := ""
+	if len(parts) == 4 {
+		suffix = "/" + parts[3]
+	}
+	_, err = services.DomainEndpointValidationFn(domain.DomainId, mth, suffix)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "endpointforbidden"})
 	}
 
-	// choose base target: endpoint-level dist endpoint takes precedence over
-	// the domain's default target.
+	// target always comes from the domain record
 	targetBase := domain.DomainTarget
-	if endpoint != nil && endpoint.DistEndpoint != "" {
-		targetBase = endpoint.DistEndpoint
-	}
 
 	targetURL := targetBase + suffix
 	if qs := string(c.Request().URI().QueryString()); qs != "" {

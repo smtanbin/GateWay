@@ -13,9 +13,13 @@ func ExtractAPIPath(path string) (string, error) {
 		return "", errors.New("path must start with /api/")
 	}
 	p := strings.TrimPrefix(path, "/api/")
+	// take only the first path segment as the domain name
+	if idx := strings.Index(p, "/"); idx != -1 {
+		p = p[:idx]
+	}
 	p = strings.TrimSuffix(p, "/")
 	if p == "" {
 		return "", errors.New("empty domain name")
 	}
-	return p, nil
+	return strings.ToLower(p), nil
 }

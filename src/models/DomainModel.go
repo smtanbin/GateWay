@@ -10,7 +10,7 @@ import (
 
 type DomainModel struct {
 	DomainId     string  `json:"domain_id" gorm:"primaryKey"`
-	DomainName   string  `json:"domain_name" uniqueIndex"`
+	DomainName   string  `json:"domain_name" gorm:"uniqueIndex"`
 	DomainSource string  `json:"domain_source"`
 	DomainTarget string  `json:"domain_target"`
 	AuthType     *string `json:"auth_type"`
