@@ -5,6 +5,7 @@ import (
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/joho/godotenv"
 	"smtanbin.com/gateway/src/models/database"
 
@@ -33,6 +34,19 @@ func main() {
 	app.Get("/admin", func(c fiber.Ctx) error {
 		return c.SendString("GateWay is running")
 	})
+
+	// CORS – allow all origins
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders: []string{"Content-Type", "Authorization"},
+	}))
+
+	// admin REST API
+	admin := app.Group("/admin")
+	proxy.RegisterAdminDomainRoutes(admin)
+	proxy.RegisterAdminEndpointRoutes(admin)
+	proxy.RegisterAdminUserRoutes(admin)
 
 	// dynamically handle /api/* routes based on database records via a group
 	api := app.Group("/api")

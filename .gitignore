@@ -1,0 +1,4 @@
+.env
+view/.env
+view/node_modules/
+view/dist/
