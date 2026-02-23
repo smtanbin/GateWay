@@ -12,7 +12,6 @@ import {
   Dropdown,
 } from 'rsuite'
 import { LayoutDashboard, Globe, GitBranch, Users } from 'lucide-react'
-import iconLogo from '../assets/Logo.webp'
 import fullLogo from '../assets/brand.webp'
 
 const navItems = [
