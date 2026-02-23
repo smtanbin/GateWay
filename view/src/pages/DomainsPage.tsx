@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Panel,
@@ -14,9 +14,7 @@ import {
   toaster,
   SelectPicker,
 } from 'rsuite'
-import PlusIcon from '@rsuite/icons/Plus'
-import EditIcon from '@rsuite/icons/Edit'
-import TrashIcon from '@rsuite/icons/Trash'
+import { Plus as PlusIcon, Pencil as EditIcon, Trash2 as TrashIcon } from 'lucide-react'
 import { domainsApi, type Domain, type CreateDomainInput } from '../api/api'
 
 const { Column, HeaderCell, Cell } = Table

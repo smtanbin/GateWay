@@ -47,6 +47,7 @@ func main() {
 	proxy.RegisterAdminDomainRoutes(admin)
 	proxy.RegisterAdminEndpointRoutes(admin)
 	proxy.RegisterAdminUserRoutes(admin)
+	proxy.RegisterAdminStatsRoutes(admin)
 
 	// dynamically handle /api/* routes based on database records via a group
 	api := app.Group("/api")

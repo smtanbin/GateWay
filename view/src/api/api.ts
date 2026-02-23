@@ -108,6 +108,23 @@ export const endpointsApi = {
     request<void>(`/admin/endpoints/${id}`, { method: 'DELETE' }),
 }
 
+// ─── Stats ───────────────────────────────────────────────────────────────────
+
+export interface ServerStats {
+  uptime_seconds: number
+  goroutines: number
+  heap_alloc_mb: number
+  heap_sys_mb: number
+  gc_runs: number
+  domain_count: number
+  endpoint_count: number
+  user_count: number
+}
+
+export const statsApi = {
+  get: () => request<ServerStats>('/admin/stats'),
+}
+
 // ─── Users ────────────────────────────────────────────────────────────────────
 
 export const usersApi = {
