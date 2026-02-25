@@ -27,8 +27,8 @@ func main() {
 		StrictRouting: true,
 		JSONEncoder:   json.Marshal,
 		JSONDecoder:   json.Unmarshal,
-		ServerHeader:  "Fiber",
-		AppName:       "GateWay",
+		ServerHeader:  "Janus",
+		AppName:       "Janus",
 	})
 
 	app.Get("/admin", func(c fiber.Ctx) error {
