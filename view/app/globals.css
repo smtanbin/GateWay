@@ -1,7 +1,24 @@
+/* local Poiret One font */
+@font-face {
+  font-family: 'Poiret One';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/PoiretOne-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
 @import "tailwindcss";
 
 :root{
-    --primary: #9A2A2A;
-    --text-color: #0D0D0D ;
-    --secondary: #FAEBEB ;
+ --primary: #9A2A2A;
+ --text-color: #0D0D0D;
+ --secondary: #FAEBEB;
+}
+
+.text {
+ color: var(--text-color);
+}
+
+.font-Poiret-One {
+ font-family: 'Poiret One', sans-serif !important;
 }

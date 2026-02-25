@@ -31,7 +31,7 @@ export default function Login() {
         <div className="w-full max-w-md p-8 bg-[var(--secondary)]/90 ">
           {/* Brand Icon */}
       
-          <h1 className="text-2xl font-semibold text-center mb-2 text-[var(--primary)]">JONUS</h1>
+          <h1 className="text-4xl font-semibold text-center mb-2 text-[var(--primary)] font-Poiret-One">JONUS</h1>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
